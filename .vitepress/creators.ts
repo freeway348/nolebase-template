@@ -45,6 +45,7 @@ export const creators: Creator[] = [
     nameAliases: ['LittleSound', '绚香音', '絢香音', 'Rizumu Oikawa', 'Rizumu Ayaka', 'Ayaka Rizumu', 'Rizumu'],
     emailAliases: ['rizumu@ayaka.moe', 'rizumu@oqo.moe'],
   },
+
 ].map<Creator>((c) => {
   c.avatar = c.avatar || getAvatarUrl(c.username)
   return c as Creator
