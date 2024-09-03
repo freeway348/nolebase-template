@@ -1,0 +1,9 @@
+{
+	"nodes":[
+		{"id":"a0a548e559ec60e4","type":"file","file":"测试/未命名.md","x":-600,"y":-180,"width":400,"height":430},
+		{"id":"58a838731b6a1b1c","type":"text","text":"测试","x":-100,"y":-320,"width":250,"height":60}
+	],
+	"edges":[
+		{"id":"a47ee65cae25a1fe","fromNode":"58a838731b6a1b1c","fromSide":"bottom","toNode":"a0a548e559ec60e4","toSide":"right"}
+	]
+}
