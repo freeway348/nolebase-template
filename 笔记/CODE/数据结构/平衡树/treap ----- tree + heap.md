@@ -187,7 +187,10 @@ void zag(int &p) // 左旋
 void insert(int &p, int key) // 同样要更新根节点，所以需要用到引用
 
 {
+	// 全局变量默认值为 0，结构体也一样，就例如说，插入一个数 x = 1，那么执行insert，先找到root指向的 - INF，发现 x 比 - INF大，那么就往右子树找，即：insert(tr[p].r, key); （这里 p == 1），然后进递归
 
+    // 此时 p = 2，key = INF，但此时 INF 的左右子树均为空，所以 tr[2].l = tr[2].r = 0, 随后就执行 if (!p) 判断通过后的 get_node 操作，其他数值的插入操作也类似
+    
     if (!p) p = get_node(key); // 如果 p == 0, 说明树是空的，所以直接创建节点
 
     else if (tr[p].key == key) tr[p].cnt ++;
