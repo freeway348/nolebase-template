@@ -39,7 +39,7 @@ B["状态表示f[i,j]"] --> E["属性：Min"]
 
 ```
 ###### 代码
-```
+```c++
 // 区间DP
 #include <iostream>
 #include <algorithm>

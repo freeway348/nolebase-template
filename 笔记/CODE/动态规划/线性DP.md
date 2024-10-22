@@ -41,7 +41,7 @@ C[状态计算] --> F[来自金字塔内该点左上和来自右上的集合的�
 
 ```
 ###### 代码
-```
+```c++
 // 原题：洛谷p1216,数字三角形
 
 #include <iostream>
@@ -123,7 +123,7 @@ C[状态计算] --> F["f[i]=max(f[j] + 1),j = 0,1,2,...,i-1"]
 
 ```
 ###### 代码
-```
+```c++
 // 原题：洛谷B3637
 #include <iostream>
 #include <algorithm>
@@ -163,7 +163,7 @@ int main()
 #### （3）最长上升子序列II
 - 优化版，数据量在100000(十万)
 ##### 代码
-```
+```c++
 // 数据量变为 1e5，数据范围在 -2e9 ~ 2e9 之间，所以之前的 O(n^2) 的朴素做法不可行，需要优化
 #include <iostream>
 #include <algorithm>
@@ -242,81 +242,53 @@ int main()
 ###### 思路
 - 参考最长上升子序列的优化和离散化，发现将第一行数字离散化后，再在第二行中找到离散化后的最长上升子序列，即为所求答案，并且时间复杂度为：$O(nlog_2n)$
 ###### 代码
-```
+```c++
 // 思路参考最长上升子序列的 nlogn 优化，结合离散化思路
 
 #include <iostream>
-
 #include <algorithm>
-
 #include <cstring>
 
   
-
 using namespace std;
 
 const int N = 2e5 + 10;
 
 int n;
-
 int a[N], b[N], q[N]; // q 数组存离散化后的 b 数组的最长上升子序列的值
-
 int alls[N]; // alls[i]:存储值 i 在第一行中的位置
 
-  
-
 int main()
-
 {
-
     cin >> n;
 
     for (int i = 0; i < n; i ++)
-
     {
-
         cin >> a[i];
-
         alls[a[i]] = i;
-
     }
 
     for (int i = 0; i < n; i ++)
-
         cin >> b[i];
-
-  
 
     int len = 0; // 最长上升子序列的长度
 
-  
-
     for (int i = 0; i < n; i ++) // 遍历第二行(数组b)的所有值
-
     {
-
         int l = 0, r = len;
 
         while(l < r)
-
         {
-
             int mid = l + r + 1 >> 1;
 
             if (q[mid] < alls[b[i]]) // 找到数组 q 中的小于 alls[b[i]] 的最大下标值
-
                 l = mid;
-
             else r = mid - 1;
-
         }
 
         len = max(len, r + 1);
 
-  
-
         q[r + 1] = alls[b[i]];
-
     }
 
     cout << len << endl;
@@ -365,7 +337,7 @@ B["状态表示f[i,j]"] --> E["属性：Max"]
 
 ```
 ###### 代码
-```
+```c++
 // 字符串型
 #include <iostream>
 #include <cstring>
