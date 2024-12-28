@@ -16,3 +16,5 @@ First集中可以包含空串
 			- 若有 $\varepsilon$，则将$First(Q)$的元素加入到First(S)中后，再继续往后循环，遇到终结符`c`时，将该终结符也加入First(S)中，终止循环
 			- 如果是 S $\rightarrow$ ABCD的情况，若A，B，C，D的`First集`中均含有 $\varepsilon$，则在将A，B，C，D的First集，如：$First(A)-\{\varepsilon\}$ 都加入First(S)后，将 $First(D)$也加入First(S)，因为是最后一个了，所以无法再去除 $\varepsilon$ 以继续循环，就此终止
 ### 二、求Follow集
+
+- 简单情况不讨论，仅讨 $A\rightarrow aB\beta$ 且 $\beta\Rightarrow\varepsilon$ （$\beta$ 能最终推导出 $\varepsilon$），例如：$\beta\rightarrow ABCD....$ ，则$First(\beta)=First(ABCD....)$ 如果First(A)中存在 $\varepsilon$ ，则将 $First(A)-\{\varepsilon\}$ 加入到FOLLOW（B）中后，再继续判断First(B)，如果First(B)中也存在 $\varepsilon$，则将$First(A)-\{\varepsilon\}$也加入到FOLLOW(B)中，再继续往后循环，如果最终推导出来仍存在 $\varepsilon$，则将所有$First-\{\varepsilon\}$加入到FOLLOW(B)中后，还需要将FOLLOW(A)也加入到FOLLOW(B)中
