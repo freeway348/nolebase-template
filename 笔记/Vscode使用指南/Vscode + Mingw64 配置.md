@@ -1,0 +1,1 @@
+- 具体配置过程网上均可找到，但下载Mingw64时，需要选择posiv.sjlj版本，否则编译后运行会出错，使用cmd终端运行编译后得到的exe文件会提示找不到libgcc_s_sjlj-1.dll文件，该文件一般存在于mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\bin，或是如图：![](assets/Pasted%20image%2020250306155413.png)
