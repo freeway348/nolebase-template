@@ -29,7 +29,7 @@ struct Node
 	int a, b;
 	operator < (const Node &M)const
 	{
-		return a > M.a; // 重载 < 运算符，使得该结构体使用sort时，将 a 从小到大排序，对 b 不操作
+		return  M.a > a; // 重载 < 运算符，使得该结构体使用sort时，将 a 从小到大排序，对 b 不操作
 	}
 }q[N];
 
