@@ -35,3 +35,49 @@ struct Node
 
 sort(q, q + n);
 ```
+
+### memset()的使用
+#### 对整数型：
+
+```C++
+memset(dist, 0x3f, sizeof dist);
+```
+#### 对浮点数：
+
+```C++
+memset(dist, 0x7f, sizeof dist);
+```
+
+
+### stringstream的使用
+
+```C++
+使用：
+int a[100];
+int cnt = 0;
+int p;
+string line;
+getline(cin, line) // 输入流，存储变量 (直接读取一行，也可用于消除换行)
+stringstream ssin(line); // 将输入数据 line 转化为输入流
+while(ssin >> p) // 相当于输入了一个数 p 
+{
+	a[cnt ++] = p; // 进行赋值
+}
+```
+- 头文件：`#include <sstring>`
+
+
+### 最大公约数GCD和最大公倍数LCM
+
+```C++
+int gcd(int a, int b)
+{
+    return b ? gcd(b, a % b) : a; 
+}
+
+int lcm(int a, int b)
+{
+    return a/gcd(a,b)*b;
+}
+
+```
