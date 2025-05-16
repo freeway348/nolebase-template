@@ -29,7 +29,7 @@ struct Node
 	int a, b;
 	operator < (const Node &M)const
 	{
-		return  M.a > a; // 重载 < 运算符，使得该结构体使用sort时，将 a 从小到大排序，对 b 不操作
+		return  a < M.a; // 重载 < 运算符，使得该结构体使用sort时，将 a 从小到大排序，对 b 不操作
 	}
 }q[N];
 
@@ -47,7 +47,6 @@ memset(dist, 0x3f, sizeof dist);
 ```C++
 memset(dist, 0x7f, sizeof dist);
 ```
-
 
 ### stringstream的使用
 
