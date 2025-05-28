@@ -131,7 +131,7 @@ public static void printHelloWorld()
 
 #### 什么是字面量？
 
-如：“Hellow World!“，"专家输出", 1553， 这些都是**字面量**
+如：`“Hellow World!“`，`"专家输出"`, `1553`， 这些都是**字面量**
 这些字面量都有其书写规则格式
 
 ![](assets/Pasted%20image%2020250526212640.png)
