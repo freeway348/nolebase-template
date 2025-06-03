@@ -62,3 +62,63 @@ switch(a)
 
 ### 三、循环结构
 
+三种循环 ：
+1. for
+2. while
+3. do...while
+do while循环是先执行再判断，if和while是先判断再执行
+```Java
+do while 写法：
+// 先执行一次  do，再进入 while 判断
+int i = 0;
+do
+{
+	System.out.println("Hello World!!!");
+	i ++;
+}
+while(i < 3);
+
+// do 后面的循环体语句必定能执行一次
+```
+
+```Java
+// 死循环写法：
+for(;;)
+{
+	System.out.println("Hello World");
+}
+
+while(true)
+{
+	System.out.println("Hello World");
+}
+
+do
+{
+	System.out.println("Hello World");
+}
+while(true);
+```
+
+```Java
+// 输出后换行：System.out.println(); 
+// 输出后不换行：System.out.print();
+```
+
+### 三、跳转关键字
+
+1. break：跳出最近的一重循环
+2. continue：跳过当次执行，进入循环的下一次执行
+
+
+### 四、获得随机数
+
+```Java
+// random() 会给出一个 [0, 1) 的小数
+// 写法1
+int num = (int) (Math.random() * 100) + 1;
+
+// 写法2
+Random r = new Random();
+int num = r.nextInt(100) + 1;
+```
