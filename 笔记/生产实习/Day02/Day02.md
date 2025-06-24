@@ -60,6 +60,12 @@ mybatis-plus.configuration.map-underscore-to-camel-case=true
 ![](assets/Pasted%20image%2020250624091709.png)
 
 @Mapper类注解用于将该mapper层的类（带注解的）加载到IOC容器中
+```Java
+@Mapper  
+public interface UserMapper extends BaseMapper<User> {  
+  
+}
+```
 
 #### UseServerApplication
 
@@ -67,7 +73,17 @@ mybatis-plus.configuration.map-underscore-to-camel-case=true
 
 该文件中存储的是启动类，使用MapperScan类注解去扫描指定包路径下的所有Mapper接口，并加载到IOC容器中
 ```Java
-@MapperScan(basePackages = "com.springboot.userserver.*.mapper")
+// 扫描指定的包路径下的所有@Mapper接口，加载到IOC容器中  
+@MapperScan(basePackages = "com.springboot.userserver.*.mapper") // 扫描哪些包路径下的@Mapper  
+@SpringBootApplication  
+public class UserServerApplication {  
+  
+    public static void main(String[] args) {  
+  
+        SpringApplication.run(UserServerApplication.class, args);  
+    }  
+  
+}
 ```
 
 
@@ -320,7 +336,7 @@ style标签是用于写CSS样式来修饰指定标签的
 	后端IP：http://localhost:8088
 	前端的端口号与后端的端口号不一致，所以产生了跨域访问，浏览器默认不允许跨域访问
 
-为了解决该问题，我们需要使用在IDEA中配置跨域访问的文件：在com.springboot.userserver下新建config包，在config下新建CorsConfig.java文件，以实现跨域访问
+为了解决该问题，我们需要使用在IDEA中配置跨域访问的文件：在后台项目的com.springboot.userserver下新建config包，在config下新建CorsConfig.java文件，以实现跨域访问
 ```Java
 @Configuration
 public class CorsConfig {
@@ -347,3 +363,7 @@ public class CorsConfig {
     }
 }
 ```
+#### 实现功能前先绘制原型图
+
+![](assets/0bafe148205121925c72fccaa3e73806.png)
+
