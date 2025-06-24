@@ -180,6 +180,169 @@ public class UserController {
 ```
 5. 到目前为止，登录功能后端代码基本实现
 ### 前端实现
+#### 前提步骤
 
 1. 创建普通项目，选择模板为基本html模板![](assets/Pasted%20image%2020250624113314.png)
-2. 
+2. 在head标签内设置utf-8编码，命名标题名称，随后导入vue和elementUI代码
+```html
+<head>
+		<meta charset="utf-8">
+		<title>用户登录</title>
+		<!-- 先导入vue.js，再导入elementui的index.js,因为element需要依赖vue -->
+		<script src="js/vue.js"></script>
+		<script src="js/index.js"></script>
+		<script src="js/axios.min.js"></script>
+		<link href="css/index.css" rel="stylesheet"/>
+	</head>
+```
+#### 框架
+
+```
+<body></body>
+<script></script>
+<style></style>
+```
+#### body标签代码内容
+
+```html
+<body>
+		<!-- 所有标签都要放在div容器中,该容器会被vue检测加载，如果标签在该div之外，则vue不会加载 -->
+		<div id="loginApp">
+			
+			<el-row>
+				<el-col :span="8" :offset="8"> 
+				<!--span标签用于调整宽度比例，offset标签用于调整上边距距离页面顶部的位置-->
+					<!--elementUI卡片样式-->
+					<el-card>
+						<h1>用户登录</h1> <!-- 标题-->
+						<el-form>
+							<el-form-item>
+								<!-- v-model是vue的双向绑定指令，会绑定一个变量，一般用在form表单的输入框中 -->
+								<el-input v-model="username" placeholder="请输入用户名"></el-input>
+							</el-form-item>
+							<el-form-item> 
+								<!-- show-password---是否明文显示密码的开关，默认关闭 -->
+								<el-input v-model="password" placeholder="请输入密码" show-password></el-input>
+							</el-form-item>
+							<el-form-item>
+								<!-- @是事件触发指令，把click交给login方法 -->
+								<el-button type="primary" @click="login">登录</el-button>
+							</el-form-item>
+						</el-form>
+					</el-card>
+					
+					
+				</el-col>
+			</el-row>
+			
+			
+			
+		</div>
+	</body>
+```
+#### script标签代码内容
+
+```html
+<script>
+		// 初始化vue对象
+		new Vue({
+			// vue检测加载标签的范围
+			el:"#loginApp",
+			data(){
+				return {
+					username:'',
+					password:''
+				}
+			},
+			// 所有方法都在methods里面定义 
+			methods:{
+				login(){
+					// 1. 封装输入框中的用户名和密码
+					let param = {}; // 初始化一个空对象
+					param.username = this.username;
+					param.password = this.password;
+					
+					// 2. 通过axios向后台发送请求并处理返回结果
+					axios.post("http://localhost:8088/user/login", param)
+					.then(result=>{
+						console.log(result); // 会在控制台将result打印出来
+						 // 后台返回的结果存在result和data属性中
+						 let data = result.data;
+					 // 判断data中code是否为200，则表示登陆成功，否则表示登陆失败
+						if (data.code == 200){
+							
+							// 把username保存到缓存中
+							sessionStorage.setItem("username", this.username);
+							
+							// 页面跳转
+							location.href="index.html";
+						}else{
+							this.$message.error(data.msg);
+						}
+					})
+					
+				}
+			}
+		})
+	</script>
+```
+#### style标签代码内容
+
+```html
+<style>
+		/* el在elementUI中是被当做类的，对类的CSS则需要在前边加个点 */
+		.el-col {
+			text-align: center;
+			margin-top:25vh;
+		}
+		body{
+			background-image:url(./img/back.jpg);
+			background-size: cover;
+		}
+	</style>
+```
+
+#### 最终实现效果
+
+![](assets/Pasted%20image%2020250624160209.png)
+
+
+#### 前端输入用户名密码后，控制台报错同源策略
+
+![](assets/Pasted%20image%2020250624154046.png)
+
+首先我们要了解浏览器同源策略：
+	浏览器同源策略：前端和后台的域名要一致才能正常通信
+	域名分为三部分：网络协议（http）、IP地址（localhost、127.0.0.1）、端口号
+	域名一致：网络协议、IP地址、端口号都要一致（localhost和127.0.0.1是一致的）
+	前端IP：http://127.0.0.1:8848
+	后端IP：http://localhost:8088
+	前端的端口号与后端的端口号不一致，所以产生了跨域访问，浏览器默认不允许跨域访问
+
+为了解决该问题，我们需要使用在IDEA中配置跨域访问的文件：在com.springboot.userserver下新建config包，在config下新建CorsConfig.java文件，以实现跨域访问
+```Java
+@Configuration
+public class CorsConfig {
+
+    // bean 表示该方法返回的类需要注册到IOC容器中
+    @Bean
+    public CorsFilter corsFilter(){ // CorsFilter过滤器实现跨域访问，如果使用拦截器来实现跨域访问，则可能出现问题
+        // 1. 初始化跨域策略对象，在该对象中设置跨域策略
+        CorsConfiguration conf = new CorsConfiguration();
+        // 表示允许所有的请求源跨域访问，如：http://localhost:8848
+        conf.addAllowedOrigin("*");
+        // 允许所有的请求头跨域访问
+        conf.addAllowedHeader("*");
+        // 允许所有的请求方式跨域，如：POST， GET， PUT， OPTIONS等
+        conf.addAllowedMethod("*");
+
+
+        // 设置哪些url允许使用跨域策略
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", conf); // 允许所有的url路径跨域
+		
+		// 返回可跨域的url路径 
+        return new CorsFilter(source);
+    }
+}
+```
