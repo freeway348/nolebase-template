@@ -288,6 +288,7 @@ public class UserController {
 ```
 #### style标签代码内容
 
+style标签是用于写CSS样式来修饰指定标签的
 ```html
 <style>
 		/* el在elementUI中是被当做类的，对类的CSS则需要在前边加个点 */
