@@ -94,7 +94,7 @@ public class UserServerApplication {
 ### 后端具体代码实现及解释
 
 ```
-主要步骤可参照上述所给的原理解析图示讲解的详细图示示例
+	主要步骤可参照上述所给的原理解析图示讲解的详细图示示例
 ```
 #### 完成前端控制器/user/controller/UserController的内容实现
 
