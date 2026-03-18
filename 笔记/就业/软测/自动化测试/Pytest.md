@@ -13,7 +13,7 @@ Pytest是一个功能强大且灵活的Python测试框架，广泛用于**单元
 
 ### 二、如何使用Pytest
 
-- Pytest的`测试文件`通常以`test_*.py`命名，也可用`*_test.py`命名，测试函数仅以`test`开头，如`def test_login()`，`def test_*()`
+- Pytest的`测试文件`通常以`test_*.py`命名，也可用`*_test.py`命名，测试函数仅以`test_`开头，如`def test_login()`，`def test_*()`
 	- 若只在命令行运行`pytest`命令，则会扫描所有`test_*.py`和`*_test.py`文件，找到以`Test`开头的**类**和以`test_`开头的**函数**，并执行以`test_`开头的**函数**
 fixture：是Pytest为测试提供的`可重用`的代码功能，可以使用scope控制的作用域
 1. 定义fixture：\@pytest.fixture修饰函数，说明下面的函数是fixture代码块
