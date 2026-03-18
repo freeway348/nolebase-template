@@ -152,9 +152,9 @@ Agents 通过“工具使用（Tool Use）”能力，将 LLM 的推理和语言
 ![](assets/Pasted%20image%2020260303155018.png)
 ### 5.2 阿里云百炼API Key
 
-创建阿里云百炼API Key网址：https://bailian.console.aliyun.com/?tab=globalset#/efm/api_key
+创建[阿里云百炼API Key网址](https://bailian.console.aliyun.com/?tab=globalset#/efm/api_key)
 
-帮助文档：https://help.aliyun.com/zh/model-studio/get-api-key?spm=a2c4g.11186623.help-menu-2400256.d_2_0_0.230611fc9mwk6f&scm=20140722.H_2712195._.OR_help-T_cn~zh-V_1
+[帮助文档](https://help.aliyun.com/zh/model-studio/get-api-key?spm=a2c4g.11186623.help-menu-2400256.d_2_0_0.230611fc9mwk6f&scm=20140722.H_2712195._.OR_help-T_cn~zh-V_1)
 
 ### 5.3 env文件
 
@@ -191,7 +191,7 @@ device_base_url = os.getenv('DEVICE_BASE_URL')
 
 ### 5.4 语音识别模型
 
-网址：https://help.aliyun.com/zh/model-studio/qwen-speech-recognition
+[网址](https://help.aliyun.com/zh/model-studio/qwen-speech-recognition)
 
 安装依赖包：
 
@@ -233,7 +233,7 @@ def speech_to_text(base64_uri):
 
 ### 5.5 语音合成模型
 
-网址：https://help.aliyun.com/zh/model-studio/text-to-speech?spm=a2c4g.11186623.help-menu-2400256.d_0_4_0.3398338fbvUVB7&scm=20140722.H_2842586._.OR_help-T_cn~zh-V_1
+[网址](https://help.aliyun.com/zh/model-studio/text-to-speech?spm=a2c4g.11186623.help-menu-2400256.d_0_4_0.3398338fbvUVB7&scm=20140722.H_2842586._.OR_help-T_cn~zh-V_1)
 
 ```python
 import base64
@@ -274,7 +274,7 @@ def text_to_speech(text):
 
 ### 5.6 千问大模型服务
 
-网址：https://bailian.console.aliyun.com/model-market?tab=model#/model-market
+[网址](https://bailian.console.aliyun.com/model-market?tab=model#/model-market)
 
 安装依赖包：
 
@@ -595,7 +595,6 @@ def process(base64_uri):
 
 API接口：向客户端提供方法，供客户端调用
 
-![image-20260108151812920](C:\Users\sdx2009\AppData\Roaming\Typora\typora-user-images\image-20260108151812920.png)
 
 ```python
 import json
