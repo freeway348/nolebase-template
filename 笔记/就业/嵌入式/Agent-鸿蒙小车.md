@@ -4,11 +4,9 @@
 
 ### 1.1 系统架构
 
-![image-20260116140330894](C:\Users\sdx2009\AppData\Roaming\Typora\typora-user-images\image-20260116140330894.png)
 
 ### 1.2 系统流程
 
-![image-20260114150909972](C:\Users\sdx2009\AppData\Roaming\Typora\typora-user-images\image-20260114150909972.png)
 
 ### 1.3 AI技术栈
 
