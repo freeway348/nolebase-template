@@ -1057,4 +1057,149 @@ class Demo:
 3. 定义测试方法：测试方法名称命名<font color="#ff0000">必须</font>以 test 开头
 	- 建议格式：`test_数字_用例说明`
 - 示例代码：![](assets/Pasted%20image%2020260413211138.png)
-项目架构 ：![](assets/Pasted%20image%2020260413210333.png)
+项目架构 ：![](assets/Pasted%20image%2020260414132350.png)
+#### 3. Pytest执行测试用例
+
+- 单条测试用例执行
+	1. 命令模式：终端中输入`pytest -s test_xxx.py`
+		- 例如，本案例中，要执行test_calc.py文件中的测试用例，需要在终端执行如下命令：`pytest -s .\script\test_calc.py`，这是因为终端默认位置是 D:\AutoTestLearning
+		- 该命令可以同时执行指定文件下的所有测试用例
+			- `-s`：允许使用 print 输出到终端
+	2. 主函数模式：选择`test_xxx.py`文件直接执行（作了解）
+- 批量用例执行
+	- 通过pytest.ini配置文件实现
+	- ![](assets/Pasted%20image%2020260414140421.png)
+	- 配置完成后，只需要在终端使用`pytest`命令，即可执行指定文件夹下的指定用例
+#### 4. 🌟断言
+
+- 断言：让程序代替人工判断测试程序执行结果是否符合预期结果
+- 作用：
+	1. 提高测试效率
+	2. 实现自动化测试
+- 使用：在需要断言的地方之间使用断言关键字 --> assert
+	- 若 assert 断言失败，则当前用例中在 assert 后的代码都不会执行
+- 分类：
+	- 相等关系：assert 预期结果  ==  实际结果  -->  即：实际结果和预期的值完全一致
+	- 包含关系：assert 预期结果  in  实际结果  -->  即：实际结果包含预期的值
+	- 真假关系：assert 实际结果  -->  即：实际结果为真
+	- 近似相等：`assert (0.1 + 0.2) == pytest.approx(0.3)`
+#### 5. 前后置操作
+
+- 作用：对一个测试用例的前置和后置进行处理
+- 控制级别：
+	- 方法级别：在每个方法前后执行前后置操作
+	- 类级别：在每个类前后执行前后置操作。例如：计算类中，在类前执行打开计算器操作，等待类中所有计算测试用例均执行完毕后再关闭计算器
+	- 模块级别【了解】：在整个py模块前后执行前后置操作
+##### 1）传统方式前后置
+###### a.方法级别前后置
+
+使用方法：
+```python
+class Demo:
+	# 前置处理
+	def setup_method(self):  # 首先自动执行
+		pass
+	# 后置处理
+	def teardown_method(self): # 最后自动执行
+		pass
+	# 在每个测试用例执行前后，都必定执行一次前后置操作（若只写了前置处理，则只进行前置处理）
+	def demo1(self):
+		pass
+```
+###### b.类级别前后置
+
+使用方法：在终端执行`pytest`命令
+```python
+class Demo:
+	# 前置处理
+	# 注意是 cls，而不是 self
+	def setup_method(cls):  # 首先自动执行
+		pass
+	# 后置处理
+	def teardown_method(cls): # 最后自动执行
+		pass
+	# 在第一个测试用例执行前进行前置处理，在最后一个用例执行后进行后置处理
+	def demo1(self):
+		pass
+```
+###### c.模块级别前后置
+
+使用方法：在终端执行`pytest`命令
+```python
+# 在（第一个模块的第一个用例执行前）第一个方法用例执行前进行前置处理，在（所有模块均执行完毕后）最后一个用例执行后进行后置处理
+# 前置处理
+def setup_method():  # 首先自动执行
+	pass
+# 后置处理
+def teardown_method(): # 最后自动执行
+	pass
+		
+class Demo:
+	def demo1(self):
+		pass
+```
+##### 2）fixture前后置
+
+- 基本用法：
+	- 使用`@pytest.fixture`装饰器定义fixture函数
+	- `yield`关键字前面的属于前置操作，后面的属于后置操作
+	- 测试方法中引用`fixture`装饰器定义的函数名作为形参传入
+- Fixture的作用域（scope）：
+	- function(默认值)：每个测试函数执行一次fixture
+	- class：每个测试类执行一次fixture
+	- module：每个测试模块执行一次fixture
+	- session：每个测试会话执行一次fixture
+```python
+import pytest
+
+@pytest.fixture(scope="class")
+def db_connection():
+  # 模拟数据库连接
+  print("开始连接数据库...")
+  connection = "Database connection"
+  yield connection         # 重点！！！
+  # 模拟关闭数据库连接
+  print("关闭数据库连接...")
+
+class TestDemo:
+  def test_db_query(self,db_connection): # 实际上，作为形参传入的db_connection是yield返回值的引用
+    print("执行数据库的查询...")
+    # 断言数据库连接成功
+    assert db_connection is not None
+
+```
+- yield关键字：作用与`return`关键字类似，也能返回当前结果，等待该返回值被用完后，再继续执行后续代码，而不是直接结束
+###### a.fixture代码的共享  -->  conftest
+
+- `conftest.py`：是pytest的一个特殊配置文件，用于定义全局或局部的fixture。可以在不同的测试文件中<font color="#ff0000">共享fixture</font>，避免代码重复
+- 作用域：
+	- 当前目录：conftest.py  对同级目录及所有子目录的测试文件生效
+	- 就近优先：子目录的  conftest.py  可以覆盖父目录同名 fixture，子目录的优先生效
+	- 向上查找：pytest 会从测试文件所在目录向上逐层查找所有  conftest.py，直到找到当前使用的 fixture 所在位置
+#### 6. Allure
+
+```
+使用pytest执行得到的测试结果只能在pycharm中看到，但我们还需要让同事、领导也看到测试结果，这就需要我们用到Allure代码生成测试报告
+```
+##### 1）基本介绍
+
+- Allure能生成美观易读的报告，支持多种开发语言，如：java、python等，且能快速上手
+- 操作步骤：
+	1. 生成测试结果文件（json文件）
+	2. 使用 allure 命令生成在线报告
+- [帮助文档](https://docs.qameta.io/allure)：https://docs.qameta.io/allure
+##### 2）环境配置
+
+1. 前往https://github.com/allure-framework/allure2/releases下载allure
+2. 解压缩到非中文目录下
+3. 将allure的bin目录添加到环境变量中
+4. windows命令行输入`allure --version`命令，能显示allure版本信息即为成功
+- 在pycharm中安装：`pip install allure-pytest`
+	- 查看是否成功安装：`pip show allure-pytest`
+##### 3）使用步骤
+
+1. 在`pytest.ini`配置文件中的命令行参数加上以下代码：`--alluredir report`
+2. 编写完测试用例后，使用`pytest`命令执行用例
+3. 运行结束后，会在项目的 report 目录下生成一些 json 文件
+4. 使用命令`allure serve report`在线生成报告（基于report下的 json 文件）
+	- 此处命令中的report指的就是前两步生成的report文件夹
