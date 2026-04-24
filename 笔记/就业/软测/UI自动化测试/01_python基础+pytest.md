@@ -1065,13 +1065,16 @@ class Demo:
 项目架构 ：![](assets/Pasted%20image%2020260414132350.png)
 #### 3. Pytest执行测试用例
 
+```
+如果已经安装了pytest，但是在命令行输入pytest命令却报错。这时候需要将pytest用python命令行的形式启动：python -m pytest
+```
 - 单条测试用例执行
 	1. 命令模式：终端中输入`pytest -s test_xxx.py`
 		- 例如，本案例中，要执行test_calc.py文件中的测试用例，需要在终端执行如下命令：`pytest -s .\script\test_calc.py`，这是因为终端默认位置是 D:\AutoTestLearning
 		- 该命令可以同时执行指定文件下的所有测试用例
 			- `-s`：允许使用 print 输出到终端
 	2. 主函数模式：选择`test_xxx.py`文件直接执行（作了解）
-- 批量用例执行
+- 批量用例执行（pytest执行多条用例一般是按照字典序顺次执行）
 	- 通过pytest.ini配置文件实现
 	- ![](assets/Pasted%20image%2020260414140421.png)
 	- 配置完成后，只需要在终端使用`pytest`命令，即可执行指定文件夹下的指定用例
@@ -1206,5 +1209,28 @@ class TestDemo:
 1. 在`pytest.ini`配置文件中的命令行参数加上以下代码：`--alluredir report`
 2. 编写完测试用例后，使用`pytest`命令执行用例
 3. 运行结束后，会在项目的 report 目录下生成一些 json 文件
-4. 使用命令`allure serve report`在线生成报告（基于report下的 json 文件）
-	- 此处命令中的report指的就是前两步生成的report文件夹
+4. 使用命令`allure serve report`在线生成在线报告（基于report下的 json 文件）
+
+##### 4）生成离线报告
+
+```
+以上方式生成的都是在线报告，以下给出生成离线报告的方法
+```
+1. 通过`pytest --alluredir=report`命令执行所有用例后生成json文件
+2. 在项目根目录下创建`cmd_allure.py`文件
+```python
+# cmd_allure.py
+# 1. 导包
+import os
+
+# 2. 配置cmd下执行命令（生成allure执行命令）
+run_cmd = "allure generate ./report -o ./new_report --clean"
+# 通过os.system(命令)方法运行终端命令（相当于在终端运行上述命令）
+os.system(run_cmd)
+
+# allure generate ：生成allure测试报告的命令
+# ./report :allure ：运行生成的临时报告文件路径
+# -o ./new_report ：输出HTML的报告到report路径下
+# --clean ：清除报告目录下原有的历史数据
+```
+3. 在Python命令行输入命令：`python ./cmd_allure.py`执行该python文件，会自动执行其中的终端命令（减少了命令行输入，在大量使用离线报告生成功能时可以省力）
