@@ -401,3 +401,208 @@ JSON最常用的格式是对象的键值对。例如：{"username":"Lisi", "age"
 	- 热启动则需要先打开APP，然后将APP置于后台，随后单击开始录制的同时，将后台APP置于前台，等待界面加载完毕后结束录制
 
 ### 五、ADB
+#### 1. 基本介绍
+
+- ADB工具：一种允许计算机与Android设备通信的命令行工具
+- ADB的作用：
+	1. 功能（含自动化）测试：模拟用户的各种操作（点击、滑动、输入等）
+	2. 专项测试：安装、卸载、文件传输等操作
+	3. 性能测试：采集性能指标数据、记录日志、monkey稳定性测试等
+- 工作原理：![](assets/Pasted%20image%2020260627203742.png)
+	- 下载的sdk包中的adb.exe就是ADB客户端；其他程序文件是用作ADB服务器，负责将adb.exe上的命令传到手机上
+	- Daemon守护进程是安卓手机自带的，手机上的adb daemon会负责接收adb传送过来的命令，并将结果回传给电脑（ADB服务器），最后在ADB客户端上显示
+#### 2. 配置环境
+
+- 找到adb.exe的存放地址：Android-sdk-windows/platform-tools，随后复制该地址，在环境变量中新建`D:\android-sdk-windows\platform-tools`，随后打开 cmd 命令行，通过命令`adb version`验证配置成功![](assets/Pasted%20image%2020260628155455.png)
+#### 3. 🌟🌟🌟ADB命令
+
+```
+注意，在执行下列adb命令之前，需要先连接物理机设备，或打开mumu模拟器等模拟手机设备的软件。此处学习使用的是mumu模拟器，当然也可以使用自己的手机连接电脑的USB接口。如果是真机，需要开启手机的USB调试模式，然后直接使用数据线连接
+```
+```
+以下的命令均是在PC端cmd命令行执行的adb命令
+```
+##### 1）adb devices  -->  显示系统中全部接入的设备
+
+- 结果示意图：![](assets/Pasted%20image%2020260628161137.png)
+	- 这里的`daemon not running`指的是本机的ADB Server（服务端）未启动，所以系统在启动本机的服务端。
+		- Server启动后，会立刻扫描所有USB接口和局域网内的TCP/IP设备，扫描到在线手机后，会立刻与每一台手机的adb daemon 守护进程建立连接，并维持长连接
+	- adb 命令发生必须指定某一个手机，不能广播发送给所有建立连接的在线手机
+	- 第五行中显示的是：`设备名称 设备状态`。此处我们可以看到，目前在线的设备名为emulator-5554，状态为offline（离线），这说明自动连接未成功。
+	- 我们发现在devices显示列表中，没有mumu模拟器对应的移动端模拟设备，所以需要我们使用命令进行手动连接，详情见手动连接命令`adb connect 设备IP`
+##### 2）开启/关闭ADB服务
+
+- 开启ADB服务：`adb start-server`
+	- 通常不使用，该命令会检查ADB服务是否启动，若已启动，则该命令不执行。
+	- 在执行`adb devices`命令时会自动执行一次`adb start-server`
+- 关闭ADB服务：`adb kill-server`
+	- 通常用于接入设备状态异常、ADB无响应等情况时关闭ADB服务
+##### 3）adb connect 设备IP  -->  手动连接设备（确保移动端设备已经接入同一局域网）
+
+- 命令：`adb connect 设备IP`
+- 示例：
+	1. 先找到mumu模拟器的ADB端口信息![](assets/Pasted%20image%2020260628171426.png)
+	2. 随后在cmd命令行输入`adb connect 127.0.0.1:5555`以建立连接。完成后再使用`adb devices`命令查看连接的设备信息，可以看到成功连接到了mumu模拟器。![](assets/Pasted%20image%2020260628171635.png)
+```
+该命令通常用于连接同一局域网下的移动端设备
+```
+- 移动端设备通过USB接口与PC端连接，会在PC端启动ADB服务后被自动扫描并建立连接。而与PC处于同一局域网下的移动端设备则无法被自动扫描，需要用户通过ADB命令`adb connect 设备IP`来手动添加。
+- 添加完毕后，PC会直接向该IP发起TCP连接请求，TCP连接建立成功后，即可对该设备发送ADB命令
+##### 4）adb disconnect 设备IP  -->  手动断开设备
+
+- 示例：`adb disconnect 127.0.0.1:5555`
+##### 5）adb install APK文件  -->  安装软件
+
+```
+此处的APK文件应该处于ADB客户端所在的PC端中，安装时需要给出文件存放具体位置
+```
+- 命令：`adb install APK文件`
+- 选项：\[-r\] 覆盖安装时保留原有数据和缓存文件。`adb install -r APK文件`，一般用于APP的覆盖更新
+- 示例：`adb install tpshop.apk`
+![](assets/Pasted%20image%2020260630160715.png)
+##### 6）adb uninstall APK包名  -->  卸载软件
+
+- 命令：`adb uninstall APK包名`
+- 选项：\[-k\] 卸载时保留数据和缓存文件
+- 示例：`adb uninstall com.tpshop.malls`
+	- 安卓软件包名的命名一般是该软件的域名的倒序。例如，百度的域名是www.baidu.com，其包名就是com.baidu.xxxxx
+![](assets/Pasted%20image%2020260630160735.png)
+##### 7）adb shell pm list packages -3  -->  查看已经安装的第三方软件包
+
+- 命令：`adb shell pm list packages -3`
+	- pm：package manage / 包管理
+	-  -3：表示第三方
+##### 8）查看正在打开的 **APP软件包名/页面名**
+
+```
+注意，windows下的adb命令 使用的是findstr，而Mac/Linux下的命令使用的是grep
+```
+- 命令：
+	- windows：`adb shell dumpsys window | findstr mCurrentFocus`
+	- Mac/Linux：`adb shell dumpsys window | grep mCurrentFocus`
+		- dumpsys：输出系统信息
+		- |（管道符） ：将管道符前边命令的输出作为后边命令的输入。
+		- findstr/grep：筛选过滤。找出mCurrenFocus（当前焦点页面）
+- 示例结果：![](assets/Pasted%20image%2020260630164135.png)
+	- 查询得到的页面名，将用于应用启动和关闭的adb命令
+	- 指定某个设备执行ADB命令，需要在adb后添加 `-s 目标设备ID`
+	- 最终显示出当前的 **软件包名/页面名**，即如上图所示的：com.netease.yanxuan/com.netease.yanxuan.module.mainpage.activity.MainPageActivity
+- 示例：![](assets/Pasted%20image%2020260630172607.png)
+	- 如图所示，打开一个APP，会依次出现三个页面，即：开屏Logo页面、广告页面，以及首页页面。区分不同页面的方法就是：显示页面的内容不同，就属于不同页面
+##### 9）adb shell pm clear apk包名  -->  清除应用数据与缓存
+
+- 示例：`adb -s 设备ID shell pm clear com.tpshop.malls`
+##### 10）启动、停止应用
+
+```
+启动的ADB命令必须找准启动页，也就是Logo或广告出现的瞬间，使用dumpsys对应的ADB命令查看此时的 软件包名/页面名，并使用该启动页进行启动测试
+```
+- 启动：
+	- 命令：`adb shell am start 包名/Acticity页面名`
+		- 此处的 `/` 不是二选一，而是通过dumpsys命令输出的系统信息就是这种形式，详情见第8个命令，即查看正在打开的 **APP软件包名/页面名**
+		- am：ActivityManager，即页面管理器
+	- 示例：`adb shell am start com.tpshop.malls/com.tpshop.`
+- 停止：
+	- 命令：`adb shell am force-stop 包名`
+###### 进阶
+
+- 启动并查看冷热启动、启动耗时、启动页等数据
+	- 命令：`adb shell am start -W -S -R 启动次数 包名/启动页面名`
+		- -W：显示启动类型（冷启动、热启动）、启动耗时、启动页面，**主要看TotalTime**
+		- -S：代表冷启动，会先关闭软件再重新启动
+		- -R：代表该软件要启动多次，后跟启动次数
+			- 这三个参数都是可选的，不强制使用
+- 说明：要理解启动时间，需要先搞清楚三个启动耗时的相关参数：
+	- ThisTime：该页面/启动页（Activity）启动耗时（毫秒）  -->  最后一个Activity的启动耗时（通常是指启动页启动完成后，用户最终看到的**首页**从开始创建到完全渲染并显示所花费的时间）
+	- <font color="#ff0000">TotalTime</font>：即应用自身启动耗时 = ThisTime + 应用application等资源启动时间（毫秒）--> 所有Activity启动的耗时总和
+	- WaitTime：即系统启动应用耗时 = TotalTime + 系统资源启动时间（毫秒）
+		- WaitTime，即等待APP应用的首页内容全部加载展示出来所耗费的时间
+##### 11）🌟🌟🌟🌟🌟adb logcat -->  获取手机日志
+
+- 命令：`adb logcat > 指定保存路径及指定文件` -->  将日志保存至指定路径的指定文件中，若该文件不存在，则创建
+- 示例：抓取APP日志信息并保存到1.txt文件中
+	- 执行命令`adb logcat > d:\Log\1.txt`
+	- 执行完成后按**ctrl+C**结束日志获取
+	- 查看获取到的1.txt日志文件
+###### 日志等级
+
+- 日志等级从上到下、从轻微到严重，分为以下几个等级：
+	- V（Verbose）
+	- D（Debug）
+	- I（Info）
+	- W（Warn）
+	- E（Error）
+	- F（Fatal）
+	- S（Silent）
+![441](assets/Pasted%20image%2020260630220007.png)
+- 除此之外，日志中还可以搜索异常关键字，参考稳定性测试中的异常关键字
+##### 12）adb push 电脑路径 手机路径  -->  将文件从电脑上传到手机
+
+ ```
+ 注意，这里需要与APK软件包下载进行区分，这个指令是用于文件传输的，而adb install 命令则是将电脑上的APK安装包在手机上安装，并没有将APK传输到手机中，只是执行了安装过程
+ ```
+- 注意：手机的文件存储根目录为 <font color="#ff0000">sdcard</font>
+- 图例说明![](assets/Pasted%20image%2020260701010522.png) 
+	- `adb -s 127.0.0.1:16384 shell`：该命令是用于进入指定设备的操作系统中，进入后只能使用Linux命令进行操作
+	- 操作结束后可使用`exit`命令退出
+##### 13）adb pull 手机路径 电脑路径 --> 将文件从手机下载到电脑的对应路径中
+
+- 示例：`adb pull sdcard/test.txt d:/Log`
+##### 14）adb shell dumpsys meminfo 包名  -->  查看内存
+
+```
+注意，使用该命令前，需要先在移动端打开对应的软件，才能查看该软件的内存情况，且该命令显示的是此刻的APP内存占用情况
+```
+- 示例：查询网易严选APP的内存占用情况：`adb -s 127.0.0.1:5555  shell dumpsys meminfo com.netease.yanxuan`![](assets/Pasted%20image%2020260701162645.png)
+
+- 该命令可以用于测试APP是否出现内存泄露的问题 -->  打开APP后，可以多次执行该命令，若Total PSS在稳定值范围内波动，则该APP正常；若持续走高，则说明存在内存泄露问题
+- `adb shell dumpsys meminfo`，该命令后不加包名，将会显示整个系统的内存使用情况，可以由此计算出某个APP的内存占用率![](assets/Pasted%20image%2020260701164528.png)
+	- 系统的内存总占用只要看Total RAM即可
+##### 15）adb shell top  -->  实时动态查看CPU信息
+
+- 该命令可以查看系统资源的使用情况
+##### 16）APP进程ID查看与APP占用CPU信息查看（静态数据）
+
+- 查看APP进程ID的命令：`adb shell ps | findstr 包名`
+- 查看APP占用CPU的信息：`adb shell dumpsys cpuinfo | findstr 进程ID`
+- 示例：以网易严选APP为例![](assets/Pasted%20image%2020260701165954.png)
+##### 17）adb shell dumpsys battery  -->  查看手机剩余电量
+
+- 示例![](assets/Pasted%20image%2020260701170205.png)
+##### 18）adb shell cat /proc/进程ID/net/dev   -->  查看流量
+
+```
+注意，该命令需要先找到对应APP的进程ID，使用命令：adb shell ps | findstr 包名
+```
+- 示例![](assets/Pasted%20image%2020260701170310.png)
+### 六、稳定性测试
+
+- 稳定性定义：APP程序能<font color="#ff0000">持久良好</font>的运行
+- 稳定性测试：在APP应用中<font color="#ff0000">随意操作</font>，挖掘可能出现的异常
+	- 随意操作/随机测试，通常是通过使用monkey工具来实现的
+#### 1. Monkey基本介绍
+
+- monkey测试就像是一只猴子在玩手机，它会乱点、随意操作手机，用以探索可能出现的异常
+- 作用：模拟用户随机进行触摸屏幕、滑动、按键等操作，对程序进行稳定性测试，检查程序异常情况
+- Monkey<font color="#ff0000">不需要安装</font>，是Android系统中自带的一款稳定性测试工具，由java语言编写。一般位于Android系统中的/system/framework/monkey.jar
+#### 2. Monkey命令
+
+- `adb -s 设备ID shell monkey -p 包名 -v 执行次数 > 结果文件(如tpshop.log)`
+	- -s：指定设备ID，确保ADB命令发送给指定ID的设备（可通过`adb devices`命令查看）
+	- -p：指定包名
+	- -v：log日志的详细程度（最高支持'-v -v -v'，这是最详细的）
+	- 执行次数：要执行随机操作的次数
+	- > ： 将前边操作的结果日志 重定向/保存 到右边的目标日志中
+#### 3. 操作步骤
+
+1. 执行命令`adb -s 127.0.0.1:5555 shell monkey -p com.netease.yanxuan -v 1000 > d:\Log\aa.log`![](assets/Pasted%20image%2020260628214818.png)
+2. 找到对应路径，发现成功创建日志文件并写入日志信息![](assets/Pasted%20image%2020260628215025.png)
+3. 检查日志中是否存在异常关键字，若存在，需要提交给开发确认
+#### 4. 异常关键字
+
+- 常见关键字：
+	- 无响应：在日志中搜索“ANR”、timeout
+	- 崩溃：在日志中搜索“NullPointerException” 或 Exception
+	- 闪退：memory out、memory Leak
+	- 错误：error、Err
+
