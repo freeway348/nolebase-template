@@ -414,6 +414,11 @@ JSON最常用的格式是对象的键值对。例如：{"username":"Lisi", "age"
 #### 2. 配置环境
 
 - 找到adb.exe的存放地址：Android-sdk-windows/platform-tools，随后复制该地址，在环境变量中新建`D:\android-sdk-windows\platform-tools`，随后打开 cmd 命令行，通过命令`adb version`验证配置成功![](assets/Pasted%20image%2020260628155455.png)
+	- 配置环境变量：
+		1. 新增环境变量：ANDROID_HOME=D:\android-sdk （这里是你实际的SDK解压地址）
+		2. 在Path环境变量中添加：\%ANDROID_HOME\%tools
+		3. 在Path环境变量中添加：\%ANDROID_HOME\%platfrom-tools
+		4. 打开cmd命令行，输入命令`adb --version`查看是否配置成功
 #### 3. 🌟🌟🌟ADB命令
 
 ```
